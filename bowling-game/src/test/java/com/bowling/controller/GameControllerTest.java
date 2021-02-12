@@ -58,7 +58,7 @@ public class GameControllerTest {
 		        .contentType(MediaType.APPLICATION_JSON)
 		        .content(new ObjectMapper().writeValueAsString(players)) 
 		        .accept(MediaType.APPLICATION_JSON)
-	        ).andExpect(status().isOk()).andReturn();
+	        ).andExpect(status().isCreated());
 	}
 	
 	@Test
@@ -83,13 +83,13 @@ public class GameControllerTest {
 		        .contentType(MediaType.APPLICATION_JSON)
 		        .content(new ObjectMapper().writeValueAsString(players)) 
 		        .accept(MediaType.APPLICATION_JSON)
-	        ).andExpect(status().isOk()).andReturn();
+	        ).andExpect(status().isCreated()).andReturn();
 		
 		MvcResult result = mockMvc.perform(get("/bowling/"+scoreBoard1.getGameID()+"/play/"+1)
 	        ).andExpect(status().isOk()).andReturn();
 		
 		String responseScore = result.getResponse().getContentAsString();
-		assertTrue(responseScore.contains("\"setsCompleted\":2,\"chancesInSet\":0,\"gameID\":1"));
+		assertTrue(responseScore.contains("setsCompleted=2, chancesInSet=0, gameID=1"));
 	}
 	
 	@Test
