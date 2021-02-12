@@ -1,6 +1,6 @@
 # BowlingGame
 
-Simple Spring Boot BowlingGame game
+Simple Spring Boot Bowling game
 ====================================
 REST API for playing the bowling game.
 It involves only backend , Java with Spring framework is used.
