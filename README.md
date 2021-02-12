@@ -19,6 +19,7 @@ This method will get the list of the players in the current game with their scor
 ### POST base_url/bowling/{gameID}/play/{playerID}
 
 This method will roll the bowl in the game represented with gameID for the given playerID, the falling of pins is random.
+This method exits with error if the chance of the player has not yet come, or the game is over, or when the player itself is not found.
 
 Build and run
 ================
