@@ -1,5 +1,7 @@
 package bowling.entity;
 
+import java.util.Arrays;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -135,6 +137,14 @@ public class ScoreBoard {
 
 	public void setGameID(Integer gameID) {
 		this.gameID = gameID;
+	}
+
+	@Override
+	public String toString() {
+		return "[id=" + id + ", currentScore=" + currentScore + ", lane=" + lane + ", totalScore="
+				+ totalScore + ", totalStrikes=" + totalStrikes + ", currentStrikes=" + currentStrikes
+				+ ", setsCompleted=" + setsCompleted + ", chancesInSet=" + chancesInSet + ", gameID=" + gameID
+				+ ", bowlingPins=" + Arrays.toString(bowlingPins) + "]";
 	}
 	
 	

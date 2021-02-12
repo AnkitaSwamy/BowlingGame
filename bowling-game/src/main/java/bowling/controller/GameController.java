@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,11 +40,13 @@ public class GameController {
 	private TreeMap<Integer, Boolean> turn;
 	
 	@PostMapping(path="/startGame")
-	public Integer startGame(@RequestBody List<Player> players) {
+	public ResponseEntity<String> startGame(@RequestBody List<Player> players) {
 		Random rand = new Random(); 
 		Integer gameID = rand.nextInt(100);
 		createPlayers(players, gameID);
-		return gameID;
+		return new ResponseEntity<>(
+			      "Game is started....Game ID is " + gameID, 
+			      HttpStatus.CREATED);
 	}
 	
 	@GetMapping(path="/players")
@@ -51,7 +55,7 @@ public class GameController {
 	}
 	
 	@GetMapping(path="/bowling/{gameID}/play/{playerID}")
-	public ScoreBoard playTheBowl(@PathVariable Integer playerID, @PathVariable Integer gameID) {
+	public ResponseEntity<String> playTheBowl(@PathVariable Integer playerID, @PathVariable Integer gameID) {
 		int score = 0;
 		ScoreBoard scoreBoard ;
 		Optional<Player> optionalPlayer = playersRepo.findById(playerID);
@@ -88,11 +92,12 @@ public class GameController {
 			
 			saveScoresInMemory(scoreBoard, player);
 			scoreBoard = findWinnerOfGame(scoreBoard, player);
+			return new ResponseEntity<>("Player "+  player.getPlayerName() + " rolled the bowl and scored " +
+			scoreBoard.getCurrentScore() + " scoreboard now is " + scoreBoard.toString(), HttpStatus.OK);
 		} else {
 			throw new PlayerNotFound("Player with id " + playerID + " not found!!!");
 		}
 		
-		return scoreBoard;
 	}
 
 	private void updateScoreIfItsASpare(int score, ScoreBoard scoreBoard) {
@@ -127,6 +132,7 @@ public class GameController {
 	}
 
 	private ScoreBoard findWinnerOfGame(ScoreBoard scoreBoard, Player player) {
+		System.out.println(player.getPlayerID()==turn.lastEntry().getKey());
 		if(player.getPlayerID()==turn.lastEntry().getKey() && scoreBoard.getSetsCompleted()==10) {
 			for(Player p : playersRepo.findAll()) {
 				if(p.getScoreboard().getTotalScore()>maxTotalScore) {
@@ -137,6 +143,7 @@ public class GameController {
 			scoreBoard = winnerScoreBoard;
 			Player winner = scoreBoard.getPlayer();
 			winner.setWinner(true);
+			playersRepo.save(winner);
 		}
 		return scoreBoard;
 	}
